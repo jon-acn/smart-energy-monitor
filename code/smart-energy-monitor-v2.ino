@@ -40,12 +40,13 @@ void setup() {
   // Set the initial relay state (this will be the "default" state after a power failure, so it's worth considering which default we want)
   digitalWrite(relay_pin, HIGH);
 
-  // Initialize display and set parameters
+  // Initialize display and set text parameters
   display.init();
   display.setFont(ArialMT_Plain_16);
   display.setTextAlignment(TEXT_ALIGN_LEFT);
 }
 
+// This function will read the analog input from the sensor and use it to calculate the electrical properties
 void sensor_read()
 {
   RawValue = analogRead(sensor_pin);
@@ -56,32 +57,28 @@ void sensor_read()
 }
 
 void loop() {
+  // Prepare the display
   display.clear();
+  
+  // Call the sensor reading function to collect a fresh reading from the current sensor
   sensor_read();
 
   // Print results to serial
-  // Serial.print("mV: " + String(Voltage) + "mV");
-  // Serial.print("Amps: " + String(Amps) + "A");
-  // Serial.print("Watts: " + String(Watts) + "W");
-  // Serial.println("Raw: " + String(analogRead(sensor_pin)));
+  Serial.print("Raw: " + String(analogRead(sensor_pin)));
+  Serial.print("Volts: " + String(Voltage) + "mV");
+  Serial.println("Amps: " + String(Amps) + "A");
+  //Serial.print("Watts: " + String(Watts) + "W");
 
-  // // Print results to OLED
+  // Print results to OLED
   display.drawString(0, 0, ("Raw: " + String(analogRead(sensor_pin))));
-  display.drawString(0, 20, ("mV: " + String(Voltage)));
+  display.drawString(0, 20, ("Volts: " + String(Voltage) + "mV"));
+  display.drawString(0, 40, ("Amps: " + String(Amps) + "A"));
+  //display.drawString(0, 40, ("Watts: " + String(Watts) + "W"));
+  
+  // Simplified output for testing
+//   display.drawString(0, 0, ("Raw: " + String(analogRead(sensor_pin))));
+//   display.drawString(0, 20, ("mV: " + String(Voltage)));
 
-  // display.drawString(0, 0, ("Raw: " + String(Voltage) + "mV"));
-  // display.drawString(0, 20, ("Amps: " + String(Amps) + "A"));
-  // display.drawString(0, 40, ("Watts: " + String(Watts) + "W"));
-
+  // Send everything to the display
   display.display();
-
-  button_state = digitalRead(button_pin);
-  if (button_state == LOW) {
-      // turn LED on:
-      digitalWrite(onboard_led_pin, HIGH);
-    } else {
-      // turn LED off:
-      digitalWrite(onboard_led_pin, LOW);
-    }
-
 }
