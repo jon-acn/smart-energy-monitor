@@ -17,10 +17,10 @@ double Amps = 0;
 double Watts = 0;
 
 // Pin mapping
-const int sensor_pin = 6;        // Analog Input, baseline (zero power consumption) = ~0.66V
-const int relay_pin = 4;         // Digital output, pull-up resistor, active LOW
-const int button_pin = 47;       // Digital Input, active LOW
-const int onboard_led_pin = 35;  // White LED built-in to the dev board
+const int sensor_pin = 6;        // Signal from current sensor: pin 6, analog input
+const int relay_pin = 4;         // Relay control signal: pin 4, digital output, active LOW
+const int button_pin = 47;       // External button: pin 47 (pin 0 for built-in button), digital input, pull-up resistor, active LOW
+const int onboard_led_pin = 35;  // White LED built-in to the dev board: pin 35, active LOW
 
 void setup() {
   Serial.begin(115200);
@@ -32,7 +32,7 @@ void setup() {
   delay(100);
 
   // Set pin modes
-  pinMode(sensor_pin, INPUT)
+  pinMode(sensor_pin, INPUT);
   pinMode(relay_pin, OUTPUT);
   pinMode(button_pin, INPUT_PULLUP);
   pinMode(onboard_led_pin, OUTPUT);
@@ -81,4 +81,14 @@ void loop() {
 
   // Send everything to the display
   display.display();
+
+  button_state = digitalRead(button_pin);
+  if (button_state == LOW) {
+    digitalWrite(relay_pin, LOW);
+    digitalWrite(onboard_led_pin, HIGH);
+    delay(10000);
+    digitalWrite(relay_pin, HIGH);
+    digitalWrite(onboard_led_pin, LOW);
+  }
+
 }
